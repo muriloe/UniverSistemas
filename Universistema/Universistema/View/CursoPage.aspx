@@ -4,4 +4,12 @@
     <div>
         asdasd
     </div>
+    <div>
+        <asp:GridView id="cursoList" runat="server" AutoGenerateColumns="false">
+            <Columns>
+                <asp:BoundField DataField="idCursos" HeaderText="ID" />
+                <asp:BoundField DataField="nome" HeaderText="Nome do curso" />
+            </Columns>
+        </asp:GridView>
+    </div>
 </asp:Content>
