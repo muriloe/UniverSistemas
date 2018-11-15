@@ -7,8 +7,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using MySql.Data.MySqlClient;
 
-
-
 public partial class View_Curso : System.Web.UI.Page
 {
     static string connString = "Server=localhost;Database=universistema;Uid=root;Pwd=admin";

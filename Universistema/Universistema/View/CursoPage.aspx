@@ -7,7 +7,7 @@
             Nome Curso:
             <asp:TextBox runat="server" ID="nomeCurso" />
             <asp:Button runat="server" ID="btnCadastrar" Text="Adicionar" OnClick="btnCadastrar_Click" />
-            <asp:Button runat="server" ID="btnEditar" Text="Editar" CommandArgument OnClick="btnEditar_Click" />
+            <asp:Button runat="server" ID="btnEditar" Text="Editar"  OnClick="btnEditar_Click" />
         </p>
         
     </div>
