@@ -17,20 +17,13 @@ public partial class View_Curso : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        var command = connection.CreateCommand();
-        MySqlDataReader reader = null;
-        try
-        {
-            connection.Open();
-            command.CommandText = "SELECT * FROM cursos";
-            reader = command.ExecuteReader();
-        }
-        finally
-        {
-            if (connection.State == ConnectionState.Open)
-                connection.Close();
-        }
+        loadCursosTable();
+    }
 
+    private void loadCursosTable()
+    {
+        btnCadastrar.Visible = true;
+        btnEditar.Visible = false; 
         using (MySqlConnection sqlCon = new MySqlConnection())
         {
             connection.Open();
@@ -39,7 +32,94 @@ public partial class View_Curso : System.Web.UI.Page
             sqlDa.Fill(dtbl);
             cursoList.DataSource = dtbl;
             cursoList.DataBind();
+            connection.Close();
+        }
+    }
+
+    private void saveCurso(string nome)
+    {
+        using (MySqlConnection sqlCon = new MySqlConnection())
+        {
+            connection.Open();
+            MySqlCommand comm = connection.CreateCommand();
+            comm.CommandText = "INSERT INTO `universistema`.`cursos` (`nome`) VALUES(@nomeCurso)";
+            comm.Parameters.AddWithValue("@nomeCurso", nome);
+
+            comm.ExecuteNonQuery();
+            connection.Close();
+            nomeCurso.Text = "";
+            loadCursosTable();
+
+        }
+    }
+
+    protected void editSelect_Click(object sender, EventArgs e)
+    {
+        int idCurso = Convert.ToInt32((sender as LinkButton).CommandArgument);
+        btnCadastrar.Visible = false;
+        btnEditar.Visible = true;
+        btnEditar.CommandArgument = idCurso.ToString();
+
+        using (MySqlConnection sqlCon = new MySqlConnection())
+        {
+            MySqlDataReader reader = null;
+            connection.Open();
+            MySqlCommand command = new MySqlCommand("SELECT * FROM cursos WHERE idCursos='" + idCurso + "'", connection);
+            DataTable dtbl = new DataTable();
+            reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                statusLabel.Text = "Editar curso";
+                nomeCurso.Text = (string)reader["nome"];
+
+            }
+            connection.Close();
         }
 
+    }
+
+    protected void apagarSelect_Click(object sender, EventArgs e)
+    {
+        int idCurso = Convert.ToInt32((sender as LinkButton).CommandArgument);
+        using (MySqlConnection sqlCon = new MySqlConnection())
+        {
+            connection.Open();
+            MySqlCommand comm = connection.CreateCommand();
+            comm.CommandText = " DELETE FROM `universistema`.`cursos` WHERE(`idcursos` = '"+ idCurso + "');";
+
+            comm.ExecuteNonQuery();
+            connection.Close();
+            nomeCurso.Text = "";
+            loadCursosTable();
+        }
+    }
+
+    protected void btnCadastrar_Click(object sender, EventArgs e)
+    {
+        if(nomeCurso.Text != null)
+        {
+            saveCurso(nomeCurso.Text);
+        }
+    }
+
+    protected void btnEditar_Click(object sender, EventArgs e)
+    {
+        var argument = ((Button)sender).CommandArgument;
+        string idCurso = argument.ToString();
+        using (MySqlConnection sqlCon = new MySqlConnection())
+        {
+            MySqlDataReader reader = null;
+            connection.Open();
+            MySqlCommand command = new MySqlCommand("UPDATE `universistema`.`cursos` SET `nome` = '"+ nomeCurso.Text + "' WHERE(`idcursos` = '"+ idCurso + "')", connection);
+            DataTable dtbl = new DataTable();
+            command.ExecuteNonQuery();
+            connection.Close();
+            nomeCurso.Text = "";
+            loadCursosTable();
+            btnCadastrar.Visible = true;
+            btnEditar.Visible = false;
+            statusLabel.Text = "Novo Curso";
+
+        }
     }
 }
