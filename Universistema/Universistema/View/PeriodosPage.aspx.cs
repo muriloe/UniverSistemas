@@ -197,8 +197,6 @@ public partial class View_PeriodosPage : System.Web.UI.Page
         int somatorioHA = 0;
 
         MySqlDataReader reader = null;
-
-
         connection.Open();
         MySqlCommand command = new MySqlCommand("SELECT * FROM periodos WHERE cursoId='" + cursoId.ToString() + "'", connection);
         reader = command.ExecuteReader();

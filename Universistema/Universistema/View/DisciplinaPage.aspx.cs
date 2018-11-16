@@ -346,8 +346,6 @@ public partial class View_Disciplina : System.Web.UI.Page
         command.ExecuteNonQuery();
         connection.Close();
 
-
-
         int idDoCurso = 0;
         reader = null;
         connection.Open();
