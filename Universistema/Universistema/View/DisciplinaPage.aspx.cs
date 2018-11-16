@@ -140,8 +140,10 @@ public partial class View_Disciplina : System.Web.UI.Page
             comm.Parameters.AddWithValue("@ht", hr.Text);
             comm.Parameters.AddWithValue("@ha", ha.Text);
             comm.Parameters.AddWithValue("@idDoPeriodo", idDoPeriodo);
-            comm.ExecuteNonQuery();
+            comm.ExecuteNonQuery();              // Execute the command
+            long id = comm.LastInsertedId;
             connection.Close();
+            atualizarSomatorioPeriodo(Convert.ToInt32(id));
             //numeroPeriodo.Text = "";
 
 
@@ -184,6 +186,7 @@ public partial class View_Disciplina : System.Web.UI.Page
             btnCadastrar.Visible = true;
             btnEditar.Visible = false;
             statusLabel.Text = "Novo Periodo";
+            atualizarSomatorioPeriodo(Convert.ToInt32(idCurso));
 
         }
     }
@@ -237,6 +240,32 @@ public partial class View_Disciplina : System.Web.UI.Page
     protected void apagarSelect_Click(object sender, EventArgs e)
     {
         int idDisciplina = Convert.ToInt32((sender as LinkButton).CommandArgument);
+        int periodoID = 0;
+
+        using (MySqlConnection sqlCon = new MySqlConnection())
+        {
+
+            MySqlDataReader reader = null;
+
+            connection.Open();
+            MySqlCommand comm = connection.CreateCommand();
+            comm.CommandText = " SELECT * FROM `universistema`.`disciplinas` WHERE(`iddisciplinas` = '" + idDisciplina + "');";
+
+            reader = comm.ExecuteReader();
+            while (reader.Read())
+            {
+                var temp = reader["periodoId"];
+                string stringText = Convert.ToString(temp);
+                periodoID = Convert.ToInt32(stringText);
+
+            }
+            connection.Close();
+            Response.Write("DISCIPLINA DELETADA");
+            atualizarSomatorioPeriodo(idDisciplina);
+            loadDisciplinas(Convert.ToInt32(periodosList.SelectedItem.Value));
+
+        }
+
         using (MySqlConnection sqlCon = new MySqlConnection())
         {
             connection.Open();
@@ -246,7 +275,131 @@ public partial class View_Disciplina : System.Web.UI.Page
             comm.ExecuteNonQuery();
             connection.Close();
             Response.Write("DISCIPLINA DELETADA");
+            atualizarSomatorioPeriodoComIdPeriodo(periodoID);
             loadDisciplinas(Convert.ToInt32(periodosList.SelectedItem.Value));
+            
         }
+    }
+
+    private void atualizarSomatorioPeriodo(int idDisciplina)
+    {
+        int idDoPeriodo = 0;
+        int somatorioAT = 0;
+        int somatorioAP = 0;
+        int somatorioCred = 0;
+        int somatorioHR = 0;
+        int somatorioHA = 0;
+
+        MySqlDataReader reader = null;
+        connection.Open();
+        MySqlCommand command = new MySqlCommand("SELECT * FROM disciplinas WHERE iddisciplinas='" + idDisciplina + "'", connection);
+        reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            var temp = reader["periodoId"];
+            string stringText = Convert.ToString(temp);
+            idDoPeriodo = Convert.ToInt32(stringText);
+        }
+        connection.Close();
+
+        connection.Open();
+        command = new MySqlCommand("SELECT * FROM disciplinas WHERE periodoId='" + idDoPeriodo.ToString() + "'", connection);
+        reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            var temp = reader["at"];
+            string stringText = Convert.ToString(temp);
+            somatorioAT += Convert.ToInt32(stringText);
+
+            temp = reader["ap"];
+            stringText = Convert.ToString(temp);
+            somatorioAP += Convert.ToInt32(stringText);
+
+            temp = reader["cred"];
+            stringText = Convert.ToString(temp);
+            somatorioCred += Convert.ToInt32(stringText);
+
+            temp = reader["hr"];
+            stringText = Convert.ToString(temp);
+            somatorioHR += Convert.ToInt32(stringText);
+
+            temp = reader["ha"];
+            stringText = Convert.ToString(temp);
+            somatorioHA += Convert.ToInt32(stringText);
+        }
+        connection.Close();
+
+        connection.Open();
+        command = new MySqlCommand("UPDATE `universistema`.`periodos` SET " +
+                                                    " `at` = '" + somatorioAT +
+                                                    "', `ap` = '" + somatorioAP +
+                                                    "', `cred` = '" + somatorioCred+
+                                                    "', `ha` = '" + somatorioHA +
+                                                    "', `hr` = '" + somatorioHR +
+                                                    "' WHERE(`idperiodos` = '" + idDoPeriodo.ToString() + "')", connection);
+
+        command.ExecuteNonQuery();
+        connection.Close();
+    }
+
+    private void atualizarSomatorioPeriodoComIdPeriodo(int idPeriodo)
+    {
+        int idDoPeriodo = 0;
+        int somatorioAT = 0;
+        int somatorioAP = 0;
+        int somatorioCred = 0;
+        int somatorioHR = 0;
+        int somatorioHA = 0;
+
+        MySqlDataReader reader = null;
+        connection.Open();
+        MySqlCommand command = new MySqlCommand("SELECT * FROM disciplinas WHERE periodoId='" + idPeriodo + "'", connection);
+        reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            var temp = reader["periodoId"];
+            string stringText = Convert.ToString(temp);
+            idDoPeriodo = Convert.ToInt32(stringText);
+        }
+        connection.Close();
+
+        connection.Open();
+        command = new MySqlCommand("SELECT * FROM disciplinas WHERE periodoId='" + idDoPeriodo.ToString() + "'", connection);
+        reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            var temp = reader["at"];
+            string stringText = Convert.ToString(temp);
+            somatorioAT += Convert.ToInt32(stringText);
+
+            temp = reader["ap"];
+            stringText = Convert.ToString(temp);
+            somatorioAP += Convert.ToInt32(stringText);
+
+            temp = reader["cred"];
+            stringText = Convert.ToString(temp);
+            somatorioCred += Convert.ToInt32(stringText);
+
+            temp = reader["hr"];
+            stringText = Convert.ToString(temp);
+            somatorioHR += Convert.ToInt32(stringText);
+
+            temp = reader["ha"];
+            stringText = Convert.ToString(temp);
+            somatorioHA += Convert.ToInt32(stringText);
+        }
+        connection.Close();
+
+        connection.Open();
+        command = new MySqlCommand("UPDATE `universistema`.`periodos` SET " +
+                                                    " `at` = '" + somatorioAT +
+                                                    "', `ap` = '" + somatorioAP +
+                                                    "', `cred` = '" + somatorioCred +
+                                                    "', `ha` = '" + somatorioHA +
+                                                    "', `hr` = '" + somatorioHR +
+                                                    "' WHERE(`idperiodos` = '" + idDoPeriodo.ToString() + "')", connection);
+
+        command.ExecuteNonQuery();
+        connection.Close();
     }
 }

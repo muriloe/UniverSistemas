@@ -27,6 +27,11 @@
         <asp:GridView id="periodoList" runat="server" AutoGenerateColumns="false" CssClass="table table-striped">
             <Columns>
                 <asp:BoundField DataField="numPeriodo" HeaderText="Numero do periodo" />
+                <asp:BoundField DataField="at" HeaderText="AT" />
+                <asp:BoundField DataField="ap" HeaderText="AP" />
+                <asp:BoundField DataField="cred" HeaderText="CRED" />
+                <asp:BoundField DataField="hr" HeaderText="HR" />
+                <asp:BoundField DataField="ha" HeaderText="HA" />
                 <asp:TemplateField>
                     <ItemTemplate>
                         <asp:LinkButton  ID="editSelect" text="Editar" runat="server"  CommandArgument='<%# Eval("idPeriodos") %>' OnClick="editSelect_Click" />

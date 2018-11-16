@@ -28,15 +28,15 @@
                     Nome Disciplina:<br />
                     <asp:TextBox runat="server" ID="nomeDisciplina" CssClass="form-group"/><br />
                     AT:<br />
-                    <asp:TextBox runat="server" ID="at" CssClass="form-group"/><br />
+                    <asp:TextBox runat="server" ID="at" CssClass="form-group"  TextMode="Number"/><br />
                     AP:<br />
-                    <asp:TextBox runat="server" ID="ap" CssClass="form-group"/><br />
+                    <asp:TextBox runat="server" ID="ap" CssClass="form-group"  TextMode="Number"/><br />
                     Creditos:<br />
-                    <asp:TextBox runat="server" ID="cred" CssClass="form-group"/><br />
+                    <asp:TextBox runat="server" ID="cred" CssClass="form-group"  TextMode="Number"/><br />
                     Horas Relógio:<br />
-                    <asp:TextBox runat="server" ID="hr" CssClass="form-group"/><br />
+                    <asp:TextBox runat="server" ID="hr" CssClass="form-group"  TextMode="Number"/><br />
                     Horas Aula:<br />
-                    <asp:TextBox runat="server" ID="ha" CssClass="form-group"/><br /> 
+                    <asp:TextBox runat="server" ID="ha" CssClass="form-group"  TextMode="Number"/><br /> 
                     
                     <asp:Button runat="server" ID="btnCadastrar" Text="Adicionar" OnClick="btnCadastrar_Click" />
                     <asp:Button runat="server" ID="btnEditar" Text="Editar"  OnClick="btnEditar_Click" />
