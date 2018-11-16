@@ -150,15 +150,109 @@ public partial class View_PeriodosPage : System.Web.UI.Page
         int idPeriodo = Convert.ToInt32((sender as LinkButton).CommandArgument);
         using (MySqlConnection sqlCon = new MySqlConnection())
         {
-            connection.Open();
-            MySqlCommand comm = connection.CreateCommand();
-            comm.CommandText = " DELETE FROM `universistema`.`periodos` WHERE(`idperiodos` = '" + idPeriodo + "');";
+            try
+            {
+                connection.Open();
+                MySqlCommand comm = connection.CreateCommand();
+                comm.CommandText = " DELETE FROM `universistema`.`periodos` WHERE(`idperiodos` = '" + idPeriodo + "');";
 
-            comm.ExecuteNonQuery();
+                comm.ExecuteNonQuery();
+               
+                Response.Write("PERIODO DELETADO");
+                loadPeriodos(Convert.ToInt32(cursoList.SelectedItem.Value));
+            }
+            catch
+            {
+                Response.Write("<div>VOCÊ NÃO PODE DELETAR UM PERIODO QUE TENHA DISCIPLINAS REGISTRADAS</div>");
+            }
             connection.Close();
-            Response.Write("PERIODO DELETADO");
-            loadPeriodos(Convert.ToInt32(cursoList.SelectedItem.Value));
+
+
+
         }
+
+        MySqlDataReader reader = null;
+
+        int idDoCurso = 0;
+        reader = null;
+        connection.Open();
+        MySqlCommand command = new MySqlCommand("SELECT * FROM periodos WHERE idperiodos='" + idPeriodo + "'", connection);
+        reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            var temp = reader["cursoId"];
+            string stringText = Convert.ToString(temp);
+            idDoCurso = Convert.ToInt32(stringText);
+        }
+        connection.Close();
+        atualizarSomatorioCurso(idDoCurso);
+    }
+
+    private void atualizarSomatorioCurso(int cursoId)
+    {
+        int somatorioAT = 0;
+        int somatorioAP = 0;
+        int somatorioCred = 0;
+        int somatorioHR = 0;
+        int somatorioHA = 0;
+
+        MySqlDataReader reader = null;
+
+
+        connection.Open();
+        MySqlCommand command = new MySqlCommand("SELECT * FROM periodos WHERE cursoId='" + cursoId.ToString() + "'", connection);
+        reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            var temp = reader["at"];
+            string stringText = Convert.ToString(temp);
+            if (stringText != "")
+            {
+                somatorioAT += Convert.ToInt32(stringText);
+            }
+
+
+            temp = reader["ap"];
+            stringText = Convert.ToString(temp);
+            if (stringText != "")
+            {
+                somatorioAP += Convert.ToInt32(stringText);
+            }
+
+            temp = reader["cred"];
+            stringText = Convert.ToString(temp);
+            if (stringText != "")
+            {
+                somatorioCred += Convert.ToInt32(stringText);
+            }
+
+            temp = reader["hr"];
+            stringText = Convert.ToString(temp);
+            if (stringText != "")
+            {
+                somatorioHR += Convert.ToInt32(stringText);
+            }
+
+            temp = reader["ha"];
+            stringText = Convert.ToString(temp);
+            if (stringText != "")
+            {
+                somatorioHA += Convert.ToInt32(stringText);
+            }
+        }
+        connection.Close();
+
+        connection.Open();
+        command = new MySqlCommand("UPDATE `universistema`.`cursos` SET " +
+                                                    " `at` = '" + somatorioAT +
+                                                    "', `ap` = '" + somatorioAP +
+                                                    "', `cred` = '" + somatorioCred +
+                                                    "', `ha` = '" + somatorioHA +
+                                                    "', `hr` = '" + somatorioHR +
+                                                    "' WHERE(`idcursos` = '" + cursoId + "')", connection);
+
+        command.ExecuteNonQuery();
+        connection.Close();
     }
 }
 

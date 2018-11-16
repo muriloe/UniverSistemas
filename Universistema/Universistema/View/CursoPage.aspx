@@ -17,6 +17,11 @@
             <Columns>
                 <asp:BoundField DataField="idCursos" HeaderText="ID" />
                 <asp:BoundField DataField="nome" HeaderText="Nome do curso" />
+                <asp:BoundField DataField="at" HeaderText="AT" />
+                <asp:BoundField DataField="ap" HeaderText="AP" />
+                <asp:BoundField DataField="cred" HeaderText="CRED" />
+                <asp:BoundField DataField="hr" HeaderText="HR" />
+                <asp:BoundField DataField="ha" HeaderText="HA" />
                 <asp:TemplateField>
                     <ItemTemplate>
                         <asp:LinkButton  ID="editSelect" text="Editar" runat="server"  CommandArgument='<%# Eval("idCursos") %>' OnClick="editSelect_Click" />
