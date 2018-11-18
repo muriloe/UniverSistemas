@@ -44,15 +44,26 @@ public partial class View_PeriodosPage : System.Web.UI.Page
 
         if (numeroPeriodo.Text != null)
         {
+
             try
             {
                 int valor = Convert.ToInt32(numeroPeriodo.Text);
-                savePeriodo(valor, idDoCurso);
-            }catch{
+                if(valor <= 0)
+                {
+                    Response.Write("<div class='alert alert-danger' role='alert'> O periodo tem que ser maior que 0</div>");
+                }
+                else
+                {
+                    savePeriodo(valor, idDoCurso);
 
+                }
+            }
+            catch{
+                Response.Write("<div class='alert alert-danger' role='alert'> O periodo tem que ser maior que 0</div>");
             }
             
         }
+
     }
 
     private void savePeriodo(int periodo, int cursoId)

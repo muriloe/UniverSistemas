@@ -94,9 +94,13 @@ public partial class View_Curso : System.Web.UI.Page
 
     protected void btnCadastrar_Click(object sender, EventArgs e)
     {
-        if(nomeCurso.Text != null)
+        if(nomeCurso.Text != "")
         {
             saveCurso(nomeCurso.Text);
+        }
+        else
+        {
+            Response.Write("<div class='alert alert-danger' role='alert'> Inisira um nome para o curso</div>");
         }
     }
 

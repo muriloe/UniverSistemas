@@ -134,30 +134,50 @@ public partial class View_Disciplina : System.Web.UI.Page
         int idDoCurso = Convert.ToInt32(cursoList.SelectedItem.Value);
         int idDoPeriodo = Convert.ToInt32(periodosList.SelectedItem.Value);
 
-        using (MySqlConnection sqlCon = new MySqlConnection())
+
+        if(nomeDisciplina.Text == "" || at.Text == "" || ap.Text == "" || cred.Text == ""|| hr.Text == "" || ha.Text == "")
         {
-            connection.Open();
-            MySqlCommand comm = connection.CreateCommand();
-            comm.CommandText = "INSERT INTO `universistema`.`disciplinas` (`nome`, `at`, `ap`, `cred`, `hr`, `ha`, `periodoId`) " +
-                                "VALUES(@nome, @at, @ap, @cred, @ht, @ha, @idDoPeriodo)";
+            Response.Write("<div class='alert alert-danger' role='alert'> Preencha todos os campos obrigatórios</div>");
+        }
+        try
+        {
+            Convert.ToInt32(at.Text);
+            Convert.ToInt32(ap.Text);
+            Convert.ToInt32(cred.Text);
+            Convert.ToInt32(hr.Text);
+            Convert.ToInt32(ha.Text);
 
-            comm.Parameters.AddWithValue("@nome", nomeDisciplina.Text);
-            comm.Parameters.AddWithValue("@at", at.Text);
-            comm.Parameters.AddWithValue("@ap", ap.Text);
-            comm.Parameters.AddWithValue("@cred", cred.Text);
-            comm.Parameters.AddWithValue("@ht", hr.Text);
-            comm.Parameters.AddWithValue("@ha", ha.Text);
-            comm.Parameters.AddWithValue("@idDoPeriodo", idDoPeriodo);
-            comm.ExecuteNonQuery();              // Execute the command
-            long id = comm.LastInsertedId;
-            connection.Close();
-            atualizarSomatorioPeriodo(Convert.ToInt32(id));
-            //numeroPeriodo.Text = "";
+            using (MySqlConnection sqlCon = new MySqlConnection())
+            {
+                connection.Open();
+                MySqlCommand comm = connection.CreateCommand();
+                comm.CommandText = "INSERT INTO `universistema`.`disciplinas` (`nome`, `at`, `ap`, `cred`, `hr`, `ha`, `periodoId`) " +
+                                    "VALUES(@nome, @at, @ap, @cred, @ht, @ha, @idDoPeriodo)";
 
+                comm.Parameters.AddWithValue("@nome", nomeDisciplina.Text);
+                comm.Parameters.AddWithValue("@at", at.Text);
+                comm.Parameters.AddWithValue("@ap", ap.Text);
+                comm.Parameters.AddWithValue("@cred", cred.Text);
+                comm.Parameters.AddWithValue("@ht", hr.Text);
+                comm.Parameters.AddWithValue("@ha", ha.Text);
+                comm.Parameters.AddWithValue("@idDoPeriodo", idDoPeriodo);
+                comm.ExecuteNonQuery();              // Execute the command
+                long id = comm.LastInsertedId;
+                connection.Close();
+                atualizarSomatorioPeriodo(Convert.ToInt32(id));
+                //numeroPeriodo.Text = "";
+
+
+            }
+            loadDisciplinas(Convert.ToInt32(periodosList.SelectedItem.Value));
+            clearFields();
+        }
+        catch 
+        {
+            Response.Write("<div class='alert alert-danger' role='alert'> Somente número nos campos: AT, AP, CRED, HR, HA</div>");
 
         }
-        loadDisciplinas(Convert.ToInt32(periodosList.SelectedItem.Value));
-        clearFields();
+
 
     }
 
